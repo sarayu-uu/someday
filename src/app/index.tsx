@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Body, Button, Screen, Title } from '@/components/ui';
 import { getRememberedProfileId, useSession, type Profile } from '@/lib/session';
 import { supabase } from '@/lib/supabase';
-import { colors, fonts } from '@/lib/theme';
+import { colors, fonts, paperShadow } from '@/lib/theme';
 
 type Load = { state: 'loading' } | { state: 'error' } | { state: 'ready'; profiles: Profile[] };
 
@@ -43,12 +43,14 @@ export default function WhoIsOpening() {
     fetchProfiles();
   }, [fetchProfiles]);
 
+  // While we look up the remembered profile, show only the paper background:
+  // most launches skip this screen entirely, so don't flash the picker.
+  if (load.state === 'loading') return <Screen>{null}</Screen>;
+
   return (
     <Screen>
       <Title subtitle="ideas for whenever we’re ready">Someday Jar</Title>
       <Text style={s.question}>Who’s opening the app?</Text>
-
-      {load.state === 'loading' && <Body>Opening the jar…</Body>}
 
       {load.state === 'error' && (
         <>
@@ -88,6 +90,7 @@ const s = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 22,
     alignItems: 'center',
+    ...paperShadow,
   },
   cardLabel: { fontFamily: fonts.hand, fontSize: 34, color: colors.ink },
 });

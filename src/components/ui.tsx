@@ -2,23 +2,43 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Paper } from '@/components/Paper';
+import { Washi } from '@/components/Washi';
 import { colors, fonts } from '@/lib/theme';
 
 export function Screen({ children }: { children: ReactNode }) {
   return (
     <SafeAreaView style={s.screen}>
+      <Paper />
       <View style={s.content}>{children}</View>
     </SafeAreaView>
   );
 }
 
-// Washi-tape title strip. Flat tint for now; candy stripes come with the real UI pass.
-export function Title({ children, subtitle }: { children: string; subtitle?: string }) {
+export function Title({
+  children,
+  subtitle,
+  tape = colors.washi,
+  stack = false,
+}: {
+  children: string;
+  subtitle?: string;
+  tape?: string;
+  // Scrapbook look: two more long tapes criss-crossing behind the title tape,
+  // running off both edges of the screen.
+  stack?: boolean;
+}) {
   return (
     <View style={s.titleWrap}>
-      <View style={s.washi}>
+      {stack && (
+        <>
+          <Washi color="#F2A3B8" tilt={7} style={[s.extraTape, { top: 6, width: 520, height: 30 }]} />
+          <Washi color="#8CCBC0" tilt={-6} style={[s.extraTape, { top: 30, width: 480, height: 28 }]} />
+        </>
+      )}
+      <Washi color={tape} style={stack ? { width: 560 } : undefined}>
         <Text style={s.title}>{children}</Text>
-      </View>
+      </Washi>
       {subtitle ? <Text style={s.subtitle}>{subtitle}</Text> : null}
     </View>
   );
@@ -64,13 +84,7 @@ const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
   content: { flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center', padding: 24, gap: 16 },
   titleWrap: { alignItems: 'center', marginBottom: 8, gap: 6 },
-  washi: {
-    backgroundColor: colors.washi,
-    opacity: 0.9,
-    paddingHorizontal: 28,
-    paddingVertical: 4,
-    transform: [{ rotate: '-2deg' }],
-  },
+  extraTape: { position: 'absolute', left: '50%' as any, marginLeft: -260, pointerEvents: 'none' as any },
   title: { fontFamily: fonts.hand, fontSize: 44, color: colors.ink },
   subtitle: { fontFamily: fonts.bodySemi, fontSize: 16, color: colors.inkSoft, textAlign: 'center' },
   label: { fontFamily: fonts.bodySemi, fontSize: 14, color: colors.inkSoft },

@@ -9,6 +9,9 @@ export const colors = {
   line: 'rgba(58,42,31,0.25)',
 };
 
+// Cards sit on the page like paper: a tight, warm shadow rather than a generic soft one.
+export const paperShadow = { boxShadow: '0px 2px 3px rgba(58,42,31,0.18)' } as const;
+
 export const fonts = {
   hand: 'Caveat_700Bold',
   handSemi: 'Caveat_600SemiBold',
